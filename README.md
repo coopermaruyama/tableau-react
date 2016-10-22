@@ -64,3 +64,9 @@ invalidated upon being used, because using it a second time will log the user
 out.
 
 If `props.token` gets updated, it will use it the next time a viz is initialized.
+
+## Testing
+```
+npm install
+npm test
+```
