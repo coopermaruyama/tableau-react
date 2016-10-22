@@ -9,7 +9,8 @@ const propTypes = {
   filters: PropTypes.object,
   url: PropTypes.string,
   parameters: PropTypes.object,
-  options: PropTypes.object
+  options: PropTypes.object,
+  token: PropTypes.string
 };
 
 const defaultProps = {
@@ -52,6 +53,11 @@ class TableauReport extends React.Component {
     // Only parameters are changed, apply via the API
     if (!isReportChanged && isParametersChanged && !isLoading) {
       this.applyParameters(nextProps.parameters);
+    }
+
+    // token change, validate it.
+    if (nextProps.token !== this.props.token) {
+      this.setState({ didInvalidateToken: false });
     }
   }
 
@@ -167,11 +173,11 @@ class TableauReport extends React.Component {
       this.viz = null;
     }
 
-    this.viz = new Tableau.Viz(this.refs['container'], vizUrl, options);
+    this.viz = new Tableau.Viz(this.container, vizUrl, options);
   }
 
   render() {
-    return <div ref="container" />;
+    return <div ref={c => this.container = c} />;
   }
 }
 
