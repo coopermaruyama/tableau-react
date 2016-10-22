@@ -6,15 +6,17 @@ import tokenizeUrl from './tokenizeUrl';
 import Tableau from 'tableau-api';
 
 const propTypes = {
-  id: PropTypes.number,
   filters: PropTypes.object,
   url: PropTypes.string,
-  parameters: PropTypes.object
+  parameters: PropTypes.object,
+  options: PropTypes.object
 };
 
 const defaultProps = {
   loading: false,
-  parameters: {}
+  parameters: {},
+  filters: {},
+  options: {}
 };
 
 class TableauReport extends React.Component {
@@ -22,8 +24,8 @@ class TableauReport extends React.Component {
     super(props);
 
     this.state = {
-      filters: {},
-      parameters: {}
+      filters: props.filters,
+      parameters: props.parameters
     };
   }
 
@@ -32,7 +34,7 @@ class TableauReport extends React.Component {
   }
 
   componentWillReceiveProps(nextProps) {
-    const isReportChanged = nextProps.id !== this.props.id;
+    const isReportChanged = nextProps.url !== this.props.url;
     const isFiltersChanged = !shallowequal(this.props.filters, nextProps.filters, this.compareArrays);
     const isParametersChanged = !shallowequal(this.props.parameters, nextProps.parameters);
     const isLoading = this.state.loading;
@@ -67,17 +69,33 @@ class TableauReport extends React.Component {
     return undefined;
   }
 
+  /**
+   * Execute a callback when an array of promises complete, regardless of
+   * whether any throw an error.
+   */
+  onComplete(promises, cb) {
+    Promise.all(promises).then(() => cb(), () => cb())
+  }
+
+  /**
+   * Returns a vizUrl, tokenizing it if a token is passed and immediately
+   * invalidating it to prevent it from being used more than once.
+   */
   getUrl() {
-    const { isTokenUsed, token } = this.props;
+    const { token } = this.props;
     const parsed = url.parse(this.props.url, true);
     const query = '?:embed=yes&:comments=no&:toolbar=yes&:refresh=yes';
 
-    if (!isTokenUsed && token) {
-      this.props.invalidateToken();
-      return tokenizeTableauUrl(this.props.url, token) + query;
+    if (!this.state.didInvalidateToken && token) {
+      this.invalidateToken();
+      return tokenizeUrl(this.props.url, token) + query;
     }
 
     return parsed.protocol + '//' + parsed.host + parsed.pathname + query;
+  }
+
+  invalidateToken() {
+    this.setState({ didInvalidateToken: true });
   }
 
   /**
@@ -89,9 +107,6 @@ class TableauReport extends React.Component {
   applyFilters(filters) {
     const REPLACE = Tableau.FilterUpdateType.REPLACE;
     const promises = [];
-    const opts = { isExcludeMode: true };
-
-    this.viz.pauseAutomaticUpdatesAsync();
 
     this.setState({ loading: true });
 
@@ -101,42 +116,28 @@ class TableauReport extends React.Component {
         !this.compareArrays(this.state.filters[key], filters[key])
       ) {
         promises.push(
-          this.sheet.applyFilterAsync(key, filters[key], REPLACE, opts)
+          this.sheet.applyFilterAsync(key, filters[key], REPLACE)
         );
       }
     }
 
-    Promise.all(promises).then(() => {
-      this.viz.resumeAutomaticUpdatesAsync();
-      this.setState({ loading: false, filters });
-    }, () => {
-      this.viz.resumeAutomaticUpdatesAsync();
-      this.setState({ loading: false, filters });
-    });
+    this.onComplete(promises, () => this.setState({ loading: false, filters }));
   }
 
-  applyParameters() {
-    const { parameters } = this.props;
+  applyParameters(parameters) {
     const promises = [];
 
-    if (!this.props.parameters || this.props.disableParameters) {
-      return;
-    }
-
-    this.setState({ loading: true });
-
     for (const key in parameters) {
-      if (parameters.hasOwnProperty(key)) {
+      if (
+        !this.state.parameters.hasOwnProperty(key) ||
+        this.state.parameters[key] !== parameters[key]
+      ) {
         const val = parameters[key];
         promises.push(this.workbook.changeParameterValueAsync(key, val));
       }
     }
 
-    Promise.all(promises).then(() => {
-      this.setState({ loading: false });
-    }, () => {
-      this.setState({ loading: false });
-    });
+    this.onComplete(promises, () => this.setState({ loading: false, parameters }));
   }
 
   /**
@@ -145,22 +146,20 @@ class TableauReport extends React.Component {
    */
   initTableau() {
     const { filters, parameters } = this.props;
+    const vizUrl = this.getUrl();
 
     const options = {
       ...filters,
       ...parameters,
+      ...this.props.options,
       onFirstInteractive: () => {
         this.workbook = this.viz.getWorkbook();
         this.sheets = this.workbook.getActiveSheet().getWorksheets();
         this.sheet = this.sheets[0];
 
-        this.setState({ loading: false, filters: filters });
-
         this.props.onLoad(new Date());
       }
     };
-
-    this.setState({ loading: true });
 
     // cleanup
     if (this.viz) {
@@ -168,13 +167,7 @@ class TableauReport extends React.Component {
       this.viz = null;
     }
 
-    /**
-     * @HACK REMOVE THIS !
-     */
-    const _vizUrl = this.getUrl();
-    console.log("vizUrl", _vizUrl);
-
-    this.viz = new Tableau.Viz(this.refs['container'], _vizUrl, options);
+    this.viz = new Tableau.Viz(this.refs['container'], vizUrl, options);
   }
 
   render() {
