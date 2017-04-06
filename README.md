@@ -1,6 +1,12 @@
 # Tableau React Component
 Tableau React component integrated with Tableau JS API.
 
+## Install
+
+```
+npm install tableau-react --save
+```
+
 ## Usage
 ```js
 import TableauReport from 'tableau-react';
@@ -19,7 +25,9 @@ const SimpleReport = props => (
 const options = {
   height: 100,
   width: 100,
-  hideTabs: false
+  hideTabs: false,
+  // All other vizCreate options are supported here, too
+  // They are listed here: https://onlinehelp.tableau.com/current/api/js_api/en-us/JavaScriptAPI/js_api_ref.htm#ref_head_9
 };
 
 const filters = {
