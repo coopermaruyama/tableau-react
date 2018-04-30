@@ -2,9 +2,9 @@
   "name": "tableau-react",
   "version": "1.0.1",
   "description": "React component for rendering tableau reports using tableau javascript API.",
-  "main": "src/index.js",
+  "main": "dist/index.js",
   "files": [
-    "src/"
+    "dist/"
   ],
   "scripts": {
     "test": "mocha test/.setup.js test/**/*-test.js",
