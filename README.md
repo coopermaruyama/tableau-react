@@ -7,6 +7,13 @@ Tableau React component integrated with Tableau JS API.
 npm install tableau-react --save
 ```
 
+## Compile this module using your build tool.
+ For example in webpack, add the below exclude rule to your `babel-loader`
+ 
+```
+exclude: /node_modules|tableau-react/
+```
+
 ## Usage
 ```js
 import TableauReport from 'tableau-react';
