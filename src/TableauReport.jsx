@@ -139,7 +139,10 @@ class TableauReport extends React.Component {
         this.state.parameters[key] !== parameters[key]
       ) {
         const val = parameters[key];
-        promises.push(this.workbook.changeParameterValueAsync(key, val));
+        // Ensure that parameters are applied only when we have a workbook
+        if (this.workbook && this.workbook.changeParameterValueAsync) {
+          promises.push(this.workbook.changeParameterValueAsync(key, val));
+        }
       }
     }
 
