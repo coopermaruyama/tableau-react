@@ -36,7 +36,7 @@ describe('TableauReport', function() {
   describe('render()', () => {
     it('has container in ref', () => {
       expect(
-        shallow(<TableauReport />).contains(<div ref="container" />)
+        shallow(<TableauReport url={CONSTANTS.VIZ_URL} />).contains(<div ref="container" />)
       ).to.equal(true);
     });
   })

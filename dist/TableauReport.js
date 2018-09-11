@@ -47,7 +47,8 @@ var propTypes = {
   url: _propTypes2.default.string,
   parameters: _propTypes2.default.object,
   options: _propTypes2.default.object,
-  token: _propTypes2.default.string
+  token: _propTypes2.default.string,
+  onLoad: _propTypes2.default.func
 };
 
 var defaultProps = {
@@ -232,7 +233,7 @@ var TableauReport = function (_React$Component) {
           _this4.sheets = _this4.workbook.getActiveSheet().getWorksheets();
           _this4.sheet = _this4.sheets[0];
 
-          _this4.props.onLoad(new Date());
+          _this4.props.onLoad && _this4.props.onLoad(new Date());
         }
       });
 
