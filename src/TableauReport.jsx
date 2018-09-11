@@ -11,7 +11,8 @@ const propTypes = {
   url: PropTypes.string,
   parameters: PropTypes.object,
   options: PropTypes.object,
-  token: PropTypes.string
+  token: PropTypes.string,
+  onLoad: PropTypes.func,
 };
 
 const defaultProps = {
