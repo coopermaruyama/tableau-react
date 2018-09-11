@@ -8,7 +8,7 @@ import Tableau from 'tableau-api';
 
 const propTypes = {
   filters: PropTypes.object,
-  url: PropTypes.string,
+  url: PropTypes.string.isRequired,
   parameters: PropTypes.object,
   options: PropTypes.object,
   token: PropTypes.string,
