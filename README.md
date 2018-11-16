@@ -9,7 +9,7 @@ npm install tableau-react --save
 
 ## Compile this module using your build tool.
  For example in webpack, add the below exclude rule to your `babel-loader`
- 
+
 ```
 exclude: /node_modules|tableau-react/
 ```
@@ -53,6 +53,9 @@ const MyReport = props => (
     filters={filters}
     parameters={parameters}
     options={options} // vizCreate options
+    // Overwrite default query params
+    // defaults to '?:embed=yes&:comments=no&:toolbar=yes&:refresh=yes'
+    query="?:embed=yes&:comments=no&:toolbar=yes&:refresh=yes"
   />
 )
 ```

@@ -13,13 +13,15 @@ const propTypes = {
   options: PropTypes.object,
   token: PropTypes.string,
   onLoad: PropTypes.func,
+  query: PropTypes.string,
 };
 
 const defaultProps = {
   loading: false,
   parameters: {},
   filters: {},
-  options: {}
+  options: {},
+  query: '?:embed=yes&:comments=no&:toolbar=yes&:refresh=yes'
 };
 
 class TableauReport extends React.Component {
@@ -90,9 +92,8 @@ class TableauReport extends React.Component {
    * invalidating it to prevent it from being used more than once.
    */
   getUrl() {
-    const { token } = this.props;
+    const { token, query } = this.props;
     const parsed = url.parse(this.props.url, true);
-    const query = '?:embed=yes&:comments=no&:toolbar=yes&:refresh=yes';
 
     if (!this.state.didInvalidateToken && token) {
       this.invalidateToken();
