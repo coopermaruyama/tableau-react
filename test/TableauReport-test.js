@@ -152,4 +152,29 @@ describe('TableauReport', function() {
       sinon.assert.calledWith(spy, 'B', 3);
     });
   })
+
+  describe('Props', () => {
+    it('sets default query', () => {
+      const wrapper = mount(
+        <TableauReport
+          url={CONSTANTS.VIZ_URL}
+        />
+      );
+      const instance = wrapper.instance();
+      const url = instance.getUrl();
+      expect(url).to.equal('http://tableau.my-server.com/views/my-workbook/my-sheet?:embed=yes&:comments=no&:toolbar=yes&:refresh=yes');
+    })
+
+    it('allows overriding query', () => {
+      const wrapper = mount(
+        <TableauReport
+          url={CONSTANTS.VIZ_URL}
+          query="?:embed=yes&:toolbar=no"
+        />
+      );
+      const instance = wrapper.instance();
+      const url = instance.getUrl();
+      expect(url).to.equal('http://tableau.my-server.com/views/my-workbook/my-sheet?:embed=yes&:toolbar=no');
+    })
+  })
 });
