@@ -44,7 +44,7 @@ function _inherits(subClass, superClass) { if (typeof superClass !== "function" 
 
 var propTypes = {
   filters: _propTypes2.default.object,
-  url: _propTypes2.default.string,
+  url: _propTypes2.default.string.isRequired,
   parameters: _propTypes2.default.object,
   options: _propTypes2.default.object,
   token: _propTypes2.default.string,
@@ -202,7 +202,10 @@ var TableauReport = function (_React$Component) {
       for (var key in parameters) {
         if (!this.state.parameters.hasOwnProperty(key) || this.state.parameters[key] !== parameters[key]) {
           var val = parameters[key];
-          promises.push(this.workbook.changeParameterValueAsync(key, val));
+          // Ensure that parameters are applied only when we have a workbook
+          if (this.workbook && this.workbook.changeParameterValueAsync) {
+            promises.push(this.workbook.changeParameterValueAsync(key, val));
+          }
         }
       }
 
