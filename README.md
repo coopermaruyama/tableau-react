@@ -7,6 +7,13 @@ Tableau React component integrated with Tableau JS API.
 npm install tableau-react --save
 ```
 
+## Compile this module using your build tool.
+ For example in webpack, add the below exclude rule to your `babel-loader`
+ 
+```
+exclude: /node_modules|tableau-react/
+```
+
 ## Usage
 ```js
 import TableauReport from 'tableau-react';
@@ -78,3 +85,12 @@ If `props.token` gets updated, it will use it the next time a viz is initialized
 npm install
 npm test
 ```
+
+
+## Local Development of this package or updating.
+
+  1. clone this repo.
+  2. Do `npm install`.
+  3. Make the changes, commit it and raise a PR.
+
+  **Note:** If you don't have write access to the repo, you need to clone it and make changes there and raise a PR to the parent repo.

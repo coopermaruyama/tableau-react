@@ -8,10 +8,11 @@ import Tableau from 'tableau-api';
 
 const propTypes = {
   filters: PropTypes.object,
-  url: PropTypes.string,
+  url: PropTypes.string.isRequired,
   parameters: PropTypes.object,
   options: PropTypes.object,
-  token: PropTypes.string
+  token: PropTypes.string,
+  onLoad: PropTypes.func,
 };
 
 const defaultProps = {
@@ -164,7 +165,7 @@ class TableauReport extends React.Component {
         this.sheets = this.workbook.getActiveSheet().getWorksheets();
         this.sheet = this.sheets[0];
 
-        this.props.onLoad(new Date());
+        this.props.onLoad && this.props.onLoad(new Date());
       }
     };
 
