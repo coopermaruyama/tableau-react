@@ -48,14 +48,16 @@ var propTypes = {
   parameters: _propTypes2.default.object,
   options: _propTypes2.default.object,
   token: _propTypes2.default.string,
-  onLoad: _propTypes2.default.func
+  onLoad: _propTypes2.default.func,
+  query: _propTypes2.default.string
 };
 
 var defaultProps = {
   loading: false,
   parameters: {},
   filters: {},
-  options: {}
+  options: {},
+  query: '?:embed=yes&:comments=no&:toolbar=yes&:refresh=yes'
 };
 
 var TableauReport = function (_React$Component) {
@@ -147,10 +149,11 @@ var TableauReport = function (_React$Component) {
   }, {
     key: 'getUrl',
     value: function getUrl() {
-      var token = this.props.token;
+      var _props = this.props,
+          token = _props.token,
+          query = _props.query;
 
       var parsed = _url2.default.parse(this.props.url, true);
-      var query = '?:embed=yes&:comments=no&:toolbar=yes&:refresh=yes';
 
       if (!this.state.didInvalidateToken && token) {
         this.invalidateToken();
@@ -224,9 +227,9 @@ var TableauReport = function (_React$Component) {
     value: function initTableau() {
       var _this4 = this;
 
-      var _props = this.props,
-          filters = _props.filters,
-          parameters = _props.parameters;
+      var _props2 = this.props,
+          filters = _props2.filters,
+          parameters = _props2.parameters;
 
       var vizUrl = this.getUrl();
 
