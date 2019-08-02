@@ -46,7 +46,7 @@ class TableauReport extends React.Component {
 
     // Only report is changed - re-initialize
     if (isReportChanged) {
-      this.initTableau();
+      this.initTableau(nextProps.url);
     }
 
     // Only filters are changed, apply via the API
@@ -91,20 +91,17 @@ class TableauReport extends React.Component {
    * Returns a vizUrl, tokenizing it if a token is passed and immediately
    * invalidating it to prevent it from being used more than once.
    */
-  getUrl() {
+  getUrl(nextUrl) {
+    const newUrl = nextUrl || this.props.url;
     const { token, query } = this.props;
-    const parsed = url.parse(this.props.url, true);
+    const parsed = url.parse(newUrl, true);
 
     if (!this.state.didInvalidateToken && token) {
       this.invalidateToken();
-      return tokenizeUrl(this.props.url, token) + query;
+      return tokenizeUrl(newUrl, token) + query;
     }
 
     return parsed.protocol + '//' + parsed.host + parsed.pathname + query;
-  }
-
-  invalidateToken() {
-    this.setState({ didInvalidateToken: true });
   }
 
   /**
@@ -159,6 +156,36 @@ class TableauReport extends React.Component {
   initTableau() {
     const { filters, parameters } = this.props;
     const vizUrl = this.getUrl();
+
+    const options = {
+      ...filters,
+      ...parameters,
+      ...this.props.options,
+      onFirstInteractive: () => {
+        this.workbook = this.viz.getWorkbook();
+        this.sheets = this.workbook.getActiveSheet().getWorksheets();
+        this.sheet = this.sheets[0];
+
+        this.props.onLoad && this.props.onLoad(new Date());
+      }
+    };
+
+    // cleanup
+    if (this.viz) {
+      this.viz.dispose();
+      this.viz = null;
+    }
+
+    this.viz = new Tableau.Viz(this.container, vizUrl, options);
+  }
+
+    /**
+   * Initialize the viz via the Tableau JS API.
+   * @return {void}
+   */
+  initTableau(nextUrl) {
+    const { filters, parameters } = this.props;
+    const vizUrl = this.getUrl(nextUrl);
 
     const options = {
       ...filters,
