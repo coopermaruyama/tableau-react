@@ -104,6 +104,10 @@ class TableauReport extends React.Component {
     return parsed.protocol + '//' + parsed.host + parsed.pathname + query;
   }
 
+  invalidateToken() {
+    this.setState({ didInvalidateToken: true });
+  }
+
   /**
    * Asynchronously applies filters to the worksheet, excluding those that have
    * already been applied, which is determined by checking against state.
@@ -150,36 +154,6 @@ class TableauReport extends React.Component {
   }
 
   /**
-   * Initialize the viz via the Tableau JS API.
-   * @return {void}
-   */
-  initTableau() {
-    const { filters, parameters } = this.props;
-    const vizUrl = this.getUrl();
-
-    const options = {
-      ...filters,
-      ...parameters,
-      ...this.props.options,
-      onFirstInteractive: () => {
-        this.workbook = this.viz.getWorkbook();
-        this.sheets = this.workbook.getActiveSheet().getWorksheets();
-        this.sheet = this.sheets[0];
-
-        this.props.onLoad && this.props.onLoad(new Date());
-      }
-    };
-
-    // cleanup
-    if (this.viz) {
-      this.viz.dispose();
-      this.viz = null;
-    }
-
-    this.viz = new Tableau.Viz(this.container, vizUrl, options);
-  }
-
-    /**
    * Initialize the viz via the Tableau JS API.
    * @return {void}
    */
