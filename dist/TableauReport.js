@@ -90,7 +90,7 @@ var TableauReport = function (_React$Component) {
 
       // Only report is changed - re-initialize
       if (isReportChanged) {
-        this.initTableau();
+        this.initTableau(nextProps.url);
       }
 
       // Only filters are changed, apply via the API
@@ -148,16 +148,17 @@ var TableauReport = function (_React$Component) {
 
   }, {
     key: 'getUrl',
-    value: function getUrl() {
+    value: function getUrl(nextUrl) {
+      var newUrl = nextUrl || this.props.url;
       var _props = this.props,
           token = _props.token,
           query = _props.query;
 
-      var parsed = _url2.default.parse(this.props.url, true);
+      var parsed = _url2.default.parse(newUrl, true);
 
       if (!this.state.didInvalidateToken && token) {
         this.invalidateToken();
-        return (0, _tokenizeUrl2.default)(this.props.url, token) + query;
+        return (0, _tokenizeUrl2.default)(newUrl, token) + query;
       }
 
       return parsed.protocol + '//' + parsed.host + parsed.pathname + query;
@@ -224,14 +225,14 @@ var TableauReport = function (_React$Component) {
 
   }, {
     key: 'initTableau',
-    value: function initTableau() {
+    value: function initTableau(nextUrl) {
       var _this4 = this;
 
       var _props2 = this.props,
           filters = _props2.filters,
           parameters = _props2.parameters;
 
-      var vizUrl = this.getUrl();
+      var vizUrl = this.getUrl(nextUrl);
 
       var options = _extends({}, filters, parameters, this.props.options, {
         onFirstInteractive: function onFirstInteractive() {
