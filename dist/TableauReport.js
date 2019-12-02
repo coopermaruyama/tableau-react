@@ -237,8 +237,17 @@ var TableauReport = function (_React$Component) {
       var options = _extends({}, filters, parameters, this.props.options, {
         onFirstInteractive: function onFirstInteractive() {
           _this4.workbook = _this4.viz.getWorkbook();
-          _this4.sheets = _this4.workbook.getActiveSheet().getWorksheets();
-          _this4.sheet = _this4.sheets[0];
+          _this4.sheet = _this4.workbook.getActiveSheet();
+
+          // If child sheets exist, choose them.
+          var hasChildSheets = typeof _this4.sheet.getWorksheets !== 'undefined';
+          if (hasChildSheets) {
+            var childSheets = _this4.sheet.getWorksheets();
+
+            if (childSheets && childSheets.length) {
+              _this4.sheet = childSheets[0];
+            }
+          }
 
           _this4.props.onLoad && _this4.props.onLoad(new Date());
         }
