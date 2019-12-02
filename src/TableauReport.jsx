@@ -4,7 +4,7 @@ import url from 'url';
 import { Promise } from 'es6-promise';
 import shallowequal from 'shallowequal';
 import tokenizeUrl from './tokenizeUrl';
-import Tableau from 'tableau-api';
+import Tableau from './tableau-2.3.0';
 
 const propTypes = {
   filters: PropTypes.object,

@@ -30,9 +30,9 @@ var _tokenizeUrl = require('./tokenizeUrl');
 
 var _tokenizeUrl2 = _interopRequireDefault(_tokenizeUrl);
 
-var _tableauApi = require('tableau-api');
+var _tableau = require('./tableau-2.3.0');
 
-var _tableauApi2 = _interopRequireDefault(_tableauApi);
+var _tableau2 = _interopRequireDefault(_tableau);
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
@@ -181,7 +181,7 @@ var TableauReport = function (_React$Component) {
     value: function applyFilters(filters) {
       var _this2 = this;
 
-      var REPLACE = _tableauApi2.default.FilterUpdateType.REPLACE;
+      var REPLACE = _tableau2.default.FilterUpdateType.REPLACE;
       var promises = [];
 
       this.setState({ loading: true });
@@ -259,7 +259,7 @@ var TableauReport = function (_React$Component) {
         this.viz = null;
       }
 
-      this.viz = new _tableauApi2.default.Viz(this.container, vizUrl, options);
+      this.viz = new _tableau2.default.Viz(this.container, vizUrl, options);
     }
   }, {
     key: 'render',
