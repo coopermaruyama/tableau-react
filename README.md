@@ -4,7 +4,17 @@ Tableau React component integrated with Tableau JS API.
 ## Install
 
 ```
-npm install tableau-react --save
+npm install tableau-react
+
+```
+
+## Install Beta Version (Uses Tableau API v2.3.0)
+
+Note: This version is not heavily tested and may be unstable.
+
+```
+npm install tableau-react@beta
+
 ```
 
 ## Compile this module using your build tool.
