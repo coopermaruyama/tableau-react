@@ -35,7 +35,7 @@ const options = {
   width: 100,
   hideTabs: false,
   // All other vizCreate options are supported here, too
-  // They are listed here: https://onlinehelp.tableau.com/current/api/js_api/en-us/JavaScriptAPI/js_api_ref.htm#ref_head_9
+  // They are listed here: https://help.tableau.com/current/api/js_api/en-us/JavaScriptAPI/js_api_ref.htm#vizcreateoptions_record
 };
 
 const filters = {
