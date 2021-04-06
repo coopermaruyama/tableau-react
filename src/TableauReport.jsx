@@ -50,7 +50,7 @@ class TableauReport extends React.Component {
     }
 
     // Only filters are changed, apply via the API
-    if (!isReportChanged && isFiltersChanged && !isLoading) {
+    if (!isReportChanged && isFiltersChanged && !isLoading && this.sheet) {
       this.applyFilters(nextProps.filters);
     }
 
