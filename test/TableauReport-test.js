@@ -3,7 +3,7 @@ import { expect } from 'chai';
 import { shallow, mount, render } from 'enzyme';
 import sinon from 'sinon';
 import TableauReport from '../src/TableauReport';
-import Tableau from '../src/tableau-2.3.0';
+import Tableau from '../src/tableau-2.7.0';
 
 const CONSTANTS = {
   VIZ_URL: 'http://tableau.my-server.com/views/my-workbook/my-sheet?:embed=yes&:comments=no&:toolbar=yes&:refresh=yes'

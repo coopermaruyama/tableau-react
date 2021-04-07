@@ -30,7 +30,7 @@ var _tokenizeUrl = require('./tokenizeUrl');
 
 var _tokenizeUrl2 = _interopRequireDefault(_tokenizeUrl);
 
-var _tableau = require('./tableau-2.3.0');
+var _tableau = require('./tableau-2.7.0');
 
 var _tableau2 = _interopRequireDefault(_tableau);
 

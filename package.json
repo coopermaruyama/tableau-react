@@ -27,13 +27,13 @@
   },
   "homepage": "https://github.com/coopermaruyama/tableau-react#readme",
   "peerDependencies": {
+    "prop-types": "^15.6.0",
     "react": "^15.3.2",
-    "react-dom": "^15.3.2",
-    "prop-types": "^15.6.0"
+    "react-dom": "^15.3.2"
   },
   "dependencies": {
     "es6-promise": "^4.2.8",
-    "prop-types": "^15.7.2",
+    "prop-types": "^15.6.0",
     "shallowequal": "^0.2.2",
     "url": "^0.11.0"
   },
