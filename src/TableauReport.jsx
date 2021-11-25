@@ -41,6 +41,7 @@ class TableauReport extends React.Component {
       let interval = setInterval(()=>{
         this.viz.refreshDataAsync()
       }, this.props.options.interval)
+      
       this.setState({intervalId:interval})
     }
   }
