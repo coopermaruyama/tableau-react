@@ -86,6 +86,7 @@ var TableauReport = function (_React$Component) {
         var interval = setInterval(function () {
           _this2.viz.refreshDataAsync();
         }, this.props.options.interval);
+
         this.setState({ intervalId: interval });
       }
     }
