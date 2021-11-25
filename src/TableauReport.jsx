@@ -1,5 +1,5 @@
 import React from 'react';
-import PropTypes from 'prop-types';
+import PropTypes, { number } from 'prop-types';
 import url from 'url';
 import { Promise } from 'es6-promise';
 import shallowequal from 'shallowequal';
@@ -30,12 +30,25 @@ class TableauReport extends React.Component {
 
     this.state = {
       filters: props.filters,
-      parameters: props.parameters
+      parameters: props.parameters,
+      intervalId: ""
     };
   }
 
   componentDidMount() {
     this.initTableau();
+    if(this.props.options.interval){
+      let interval = setInterval(()=>{
+        this.viz.refreshDataAsync()
+      }, this.props.options.interval)
+      this.setState({intervalId:interval})
+    }
+  }
+
+  componentWillUnmount(){
+    if(this.state.intervalId){
+      clearInterval(this.state.intervalId)
+    }
   }
 
   componentWillReceiveProps(nextProps) {
