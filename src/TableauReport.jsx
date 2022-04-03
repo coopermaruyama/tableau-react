@@ -31,31 +31,23 @@ class TableauReport extends React.Component {
     this.state = {
       filters: props.filters,
       parameters: props.parameters,
-      intervalId: ""
+      intervalId: null,
     };
   }
 
   componentDidMount() {
     this.initTableau();
-    if(this.props.options.interval){
-      let interval = setInterval(()=>{
-        this.viz.refreshDataAsync()
-      }, this.props.options.interval)
-      
-      this.setState({intervalId:interval})
-    }
   }
 
   componentWillUnmount(){
-    if(this.state.intervalId){
-      clearInterval(this.state.intervalId)
-    }
+    this.clearInterval();
   }
 
   componentDidUpdate(prevProps) {
     const isReportChanged = this.props.url !== prevProps.url;
     const isFiltersChanged = !shallowequal(prevProps.filters, this.props.filters, this.compareArrays);
     const isParametersChanged = !shallowequal(prevProps.parameters, this.props.parameters);
+    const isIntervalChanged = this.props.options.interval !== prevProps.options.interval;
     const isLoading = this.state.loading;
 
     // Only report is changed - re-initialize
@@ -76,6 +68,11 @@ class TableauReport extends React.Component {
     // token change, validate it.
     if (this.props.token !== prevProps.token) {
       this.setState({ didInvalidateToken: false });
+    }
+
+    // unset interval or update if changed
+    if (isIntervalChanged && typeof this.props.options.interval === 'number') {
+      this.initInterval();
     }
   }
 
@@ -173,6 +170,30 @@ class TableauReport extends React.Component {
   }
 
   /**
+   * If an interval is passed, refrshes the report every interval.
+   */
+  initInterval() {
+    // Setup auto-refresh
+    if (typeof this.props.options.interval === 'number') {
+      let interval = setInterval(() => {
+        this.viz.refreshDataAsync()
+      }, this.props.options.interval);
+
+      this.setState({ intervalId: interval });
+    }
+  }
+
+  /**
+   * Clear interval if set.
+   */
+  clearInterval() {
+    if (typeof this.state.intervalId === 'number') {
+      clearInterval(this.state.intervalId);
+      this.setState({ intervalId: null });
+    }
+  }
+
+  /**
    * Initialize the viz via the Tableau JS API.
    * @return {void}
    */
@@ -209,6 +230,7 @@ class TableauReport extends React.Component {
     }
 
     this.viz = new Tableau.Viz(this.container, vizUrl, options);
+    this.initInterval();
   }
 
   render() {

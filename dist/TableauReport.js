@@ -71,7 +71,7 @@ var TableauReport = function (_React$Component) {
     _this.state = {
       filters: props.filters,
       parameters: props.parameters,
-      intervalId: ""
+      intervalId: null
     };
     return _this;
   }
@@ -79,23 +79,12 @@ var TableauReport = function (_React$Component) {
   _createClass(TableauReport, [{
     key: 'componentDidMount',
     value: function componentDidMount() {
-      var _this2 = this;
-
       this.initTableau();
-      if (this.props.options.interval) {
-        var interval = setInterval(function () {
-          _this2.viz.refreshDataAsync();
-        }, this.props.options.interval);
-
-        this.setState({ intervalId: interval });
-      }
     }
   }, {
     key: 'componentWillUnmount',
     value: function componentWillUnmount() {
-      if (this.state.intervalId) {
-        clearInterval(this.state.intervalId);
-      }
+      this.clearInterval();
     }
   }, {
     key: 'componentDidUpdate',
@@ -103,6 +92,7 @@ var TableauReport = function (_React$Component) {
       var isReportChanged = this.props.url !== prevProps.url;
       var isFiltersChanged = !(0, _shallowequal2.default)(prevProps.filters, this.props.filters, this.compareArrays);
       var isParametersChanged = !(0, _shallowequal2.default)(prevProps.parameters, this.props.parameters);
+      var isIntervalChanged = this.props.options.interval !== prevProps.options.interval;
       var isLoading = this.state.loading;
 
       // Only report is changed - re-initialize
@@ -123,6 +113,11 @@ var TableauReport = function (_React$Component) {
       // token change, validate it.
       if (this.props.token !== prevProps.token) {
         this.setState({ didInvalidateToken: false });
+      }
+
+      // unset interval or update if changed
+      if (isIntervalChanged && typeof this.props.options.interval === 'number') {
+        this.initInterval();
       }
     }
 
@@ -196,7 +191,7 @@ var TableauReport = function (_React$Component) {
   }, {
     key: 'applyFilters',
     value: function applyFilters(filters) {
-      var _this3 = this;
+      var _this2 = this;
 
       var REPLACE = _tableauSdk2.default.FilterUpdateType.REPLACE;
       var promises = [];
@@ -215,13 +210,13 @@ var TableauReport = function (_React$Component) {
       }
 
       this.onComplete(promises, function () {
-        return _this3.setState({ loading: false, filters: filters });
+        return _this2.setState({ loading: false, filters: filters });
       });
     }
   }, {
     key: 'applyParameters',
     value: function applyParameters(parameters) {
-      var _this4 = this;
+      var _this3 = this;
 
       var promises = [];
 
@@ -236,9 +231,51 @@ var TableauReport = function (_React$Component) {
       }
 
       this.onComplete(promises, function () {
-        return _this4.setState({ loading: false, parameters: parameters });
+        return _this3.setState({ loading: false, parameters: parameters });
       });
     }
+
+    /**
+     * If an interval is passed, refrshes the report every interval.
+     */
+
+  }, {
+    key: 'initInterval',
+    value: function initInterval() {
+      var _this4 = this;
+
+      // Setup auto-refresh
+      if (typeof this.props.options.interval === 'number') {
+        var interval = setInterval(function () {
+          _this4.viz.refreshDataAsync();
+        }, this.props.options.interval);
+
+        this.setState({ intervalId: interval });
+      }
+    }
+
+    /**
+     * Clear interval if set.
+     */
+
+  }, {
+    key: 'clearInterval',
+    value: function (_clearInterval) {
+      function clearInterval() {
+        return _clearInterval.apply(this, arguments);
+      }
+
+      clearInterval.toString = function () {
+        return _clearInterval.toString();
+      };
+
+      return clearInterval;
+    }(function () {
+      if (typeof this.state.intervalId === 'number') {
+        clearInterval(this.state.intervalId);
+        this.setState({ intervalId: null });
+      }
+    })
 
     /**
      * Initialize the viz via the Tableau JS API.
@@ -282,6 +319,7 @@ var TableauReport = function (_React$Component) {
       }
 
       this.viz = new _tableauSdk2.default.Viz(this.container, vizUrl, options);
+      this.initInterval();
     }
   }, {
     key: 'render',
