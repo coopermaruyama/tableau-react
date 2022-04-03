@@ -3,7 +3,7 @@ import { expect } from 'chai';
 import { shallow, mount, render } from 'enzyme';
 import sinon from 'sinon';
 import TableauReport from '../src/TableauReport';
-import Tableau from 'tableau-api';
+import Tableau from '../src/tableau-sdk';
 
 
 const CONSTANTS = {

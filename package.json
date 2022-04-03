@@ -9,7 +9,9 @@
   "scripts": {
     "test": "mocha test/.setup.js test/**/*-test.js",
     "build": "rimraf dist/ && babel src/ --out-dir dist",
-    "prepublish": "npm run build"
+    "prepublish": "npm run build",
+    "live-server": "live-server",
+    "bundle": "./node_modules/.bin/esbuild example/main.jsx --bundle --outfile=example/main.bundle.js --watch"
   },
   "repository": {
     "type": "git",
@@ -27,15 +29,14 @@
   },
   "homepage": "https://github.com/coopermaruyama/tableau-react#readme",
   "peerDependencies": {
+    "prop-types": "^15.6.0",
     "react": "^15.3.2",
-    "react-dom": "^15.3.2",
-    "prop-types": "^15.6.0"
+    "react-dom": "^15.3.2"
   },
   "dependencies": {
     "es6-promise": "^4.0.5",
-    "prop-types": "^15.6.1",
+    "prop-types": "^15.6.0",
     "shallowequal": "^0.2.2",
-    "tableau-api": "https://github.com/ilyabo/tableau-api",
     "url": "^0.11.0"
   },
   "devDependencies": {
@@ -49,7 +50,9 @@
     "chai": "^3.5.0",
     "enzyme": "^3.6.0",
     "enzyme-adapter-react-16": "^1.5.0",
-    "jsdom": "^9.8.0",
+    "esbuild": "^0.14.30",
+    "jsdom": "^9.12.0",
+    "live-server": "^1.2.1",
     "mocha": "^5.2.0",
     "react": "^16.5.0",
     "react-addons-test-utils": "^15.6.2",

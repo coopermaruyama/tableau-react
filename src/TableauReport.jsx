@@ -4,7 +4,7 @@ import url from 'url';
 import { Promise } from 'es6-promise';
 import shallowequal from 'shallowequal';
 import tokenizeUrl from './tokenizeUrl';
-import Tableau from 'tableau-api';
+import Tableau from './tableau-sdk';
 
 const propTypes = {
   filters: PropTypes.object,
@@ -38,29 +38,29 @@ class TableauReport extends React.Component {
     this.initTableau();
   }
 
-  componentWillReceiveProps(nextProps) {
-    const isReportChanged = nextProps.url !== this.props.url;
-    const isFiltersChanged = !shallowequal(this.props.filters, nextProps.filters, this.compareArrays);
-    const isParametersChanged = !shallowequal(this.props.parameters, nextProps.parameters);
+  componentDidUpdate(prevProps) {
+    const isReportChanged = this.props.url !== prevProps.url;
+    const isFiltersChanged = !shallowequal(prevProps.filters, this.props.filters, this.compareArrays);
+    const isParametersChanged = !shallowequal(prevProps.parameters, this.props.parameters);
     const isLoading = this.state.loading;
 
     // Only report is changed - re-initialize
     if (isReportChanged) {
-      this.initTableau(nextProps.url);
+      this.initTableau(this.props.url);
     }
 
     // Only filters are changed, apply via the API
     if (!isReportChanged && isFiltersChanged && !isLoading) {
-      this.applyFilters(nextProps.filters);
+      this.applyFilters(this.props.filters);
     }
 
     // Only parameters are changed, apply via the API
     if (!isReportChanged && isParametersChanged && !isLoading) {
-      this.applyParameters(nextProps.parameters);
+      this.applyParameters(this.props.parameters);
     }
 
     // token change, validate it.
-    if (nextProps.token !== this.props.token) {
+    if (this.props.token !== prevProps.token) {
       this.setState({ didInvalidateToken: false });
     }
   }
