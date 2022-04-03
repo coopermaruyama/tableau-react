@@ -184,6 +184,11 @@ var TableauReport = function (_React$Component) {
       var REPLACE = _tableauSdk2.default.FilterUpdateType.REPLACE;
       var promises = [];
 
+      if (!this.sheet) {
+        console.warn('tableau-react: Not appplying filters because the sheet is not loaded yet.');
+        return;
+      }
+
       this.setState({ loading: true });
 
       for (var key in filters) {
