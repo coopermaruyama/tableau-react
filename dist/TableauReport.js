@@ -70,7 +70,8 @@ var TableauReport = function (_React$Component) {
 
     _this.state = {
       filters: props.filters,
-      parameters: props.parameters
+      parameters: props.parameters,
+      intervalId: ""
     };
     return _this;
   }
@@ -78,7 +79,23 @@ var TableauReport = function (_React$Component) {
   _createClass(TableauReport, [{
     key: 'componentDidMount',
     value: function componentDidMount() {
+      var _this2 = this;
+
       this.initTableau();
+      if (this.props.options.interval) {
+        var interval = setInterval(function () {
+          _this2.viz.refreshDataAsync();
+        }, this.props.options.interval);
+
+        this.setState({ intervalId: interval });
+      }
+    }
+  }, {
+    key: 'componentWillUnmount',
+    value: function componentWillUnmount() {
+      if (this.state.intervalId) {
+        clearInterval(this.state.intervalId);
+      }
     }
   }, {
     key: 'componentDidUpdate',
@@ -179,7 +196,7 @@ var TableauReport = function (_React$Component) {
   }, {
     key: 'applyFilters',
     value: function applyFilters(filters) {
-      var _this2 = this;
+      var _this3 = this;
 
       var REPLACE = _tableauSdk2.default.FilterUpdateType.REPLACE;
       var promises = [];
@@ -198,13 +215,13 @@ var TableauReport = function (_React$Component) {
       }
 
       this.onComplete(promises, function () {
-        return _this2.setState({ loading: false, filters: filters });
+        return _this3.setState({ loading: false, filters: filters });
       });
     }
   }, {
     key: 'applyParameters',
     value: function applyParameters(parameters) {
-      var _this3 = this;
+      var _this4 = this;
 
       var promises = [];
 
@@ -219,7 +236,7 @@ var TableauReport = function (_React$Component) {
       }
 
       this.onComplete(promises, function () {
-        return _this3.setState({ loading: false, parameters: parameters });
+        return _this4.setState({ loading: false, parameters: parameters });
       });
     }
 
@@ -231,7 +248,7 @@ var TableauReport = function (_React$Component) {
   }, {
     key: 'initTableau',
     value: function initTableau(nextUrl) {
-      var _this4 = this;
+      var _this5 = this;
 
       var _props2 = this.props,
           filters = _props2.filters,
@@ -241,20 +258,20 @@ var TableauReport = function (_React$Component) {
 
       var options = _extends({}, filters, parameters, this.props.options, {
         onFirstInteractive: function onFirstInteractive() {
-          _this4.workbook = _this4.viz.getWorkbook();
-          _this4.sheet = _this4.workbook.getActiveSheet();
+          _this5.workbook = _this5.viz.getWorkbook();
+          _this5.sheet = _this5.workbook.getActiveSheet();
 
           // If child sheets exist, choose them.
-          var hasChildSheets = typeof _this4.sheet.getWorksheets !== 'undefined';
+          var hasChildSheets = typeof _this5.sheet.getWorksheets !== 'undefined';
           if (hasChildSheets) {
-            var childSheets = _this4.sheet.getWorksheets();
+            var childSheets = _this5.sheet.getWorksheets();
 
             if (childSheets && childSheets.length) {
-              _this4.sheet = childSheets[0];
+              _this5.sheet = childSheets[0];
             }
           }
 
-          _this4.props.onLoad && _this4.props.onLoad(new Date());
+          _this5.props.onLoad && _this5.props.onLoad(new Date());
         }
       });
 
@@ -269,10 +286,10 @@ var TableauReport = function (_React$Component) {
   }, {
     key: 'render',
     value: function render() {
-      var _this5 = this;
+      var _this6 = this;
 
       return _react2.default.createElement('div', { ref: function ref(c) {
-          return _this5.container = c;
+          return _this6.container = c;
         } });
     }
   }]);

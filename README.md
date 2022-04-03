@@ -34,6 +34,7 @@ const options = {
   height: 100,
   width: 100,
   hideTabs: false,
+  // added interval support - an integer can be passed as milliseconds in the options object and refreshDataAsync() will refresh the data automatically on your preferred interval.
   // All other vizCreate options are supported here, too
   // They are listed here: https://help.tableau.com/current/api/js_api/en-us/JavaScriptAPI/js_api_ref.htm#vizcreateoptions_record
 };
