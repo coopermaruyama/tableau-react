@@ -118,6 +118,11 @@ class TableauReport extends React.Component {
     const REPLACE = Tableau.FilterUpdateType.REPLACE;
     const promises = [];
 
+    if (!this.sheet) {
+      console.warn(`tableau-react: Not appplying filters because the sheet is not loaded yet.`);
+      return;
+    }
+
     this.setState({ loading: true });
 
     for (const key in filters) {
