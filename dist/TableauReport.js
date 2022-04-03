@@ -30,9 +30,9 @@ var _tokenizeUrl = require('./tokenizeUrl');
 
 var _tokenizeUrl2 = _interopRequireDefault(_tokenizeUrl);
 
-var _tableauApi = require('tableau-api');
+var _tableauSdk = require('./tableau-sdk');
 
-var _tableauApi2 = _interopRequireDefault(_tableauApi);
+var _tableauSdk2 = _interopRequireDefault(_tableauSdk);
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
@@ -81,30 +81,30 @@ var TableauReport = function (_React$Component) {
       this.initTableau();
     }
   }, {
-    key: 'componentWillReceiveProps',
-    value: function componentWillReceiveProps(nextProps) {
-      var isReportChanged = nextProps.url !== this.props.url;
-      var isFiltersChanged = !(0, _shallowequal2.default)(this.props.filters, nextProps.filters, this.compareArrays);
-      var isParametersChanged = !(0, _shallowequal2.default)(this.props.parameters, nextProps.parameters);
+    key: 'componentDidUpdate',
+    value: function componentDidUpdate(prevProps) {
+      var isReportChanged = this.props.url !== prevProps.url;
+      var isFiltersChanged = !(0, _shallowequal2.default)(prevProps.filters, this.props.filters, this.compareArrays);
+      var isParametersChanged = !(0, _shallowequal2.default)(prevProps.parameters, this.props.parameters);
       var isLoading = this.state.loading;
 
       // Only report is changed - re-initialize
       if (isReportChanged) {
-        this.initTableau(nextProps.url);
+        this.initTableau(this.props.url);
       }
 
       // Only filters are changed, apply via the API
       if (!isReportChanged && isFiltersChanged && !isLoading) {
-        this.applyFilters(nextProps.filters);
+        this.applyFilters(this.props.filters);
       }
 
       // Only parameters are changed, apply via the API
       if (!isReportChanged && isParametersChanged && !isLoading) {
-        this.applyParameters(nextProps.parameters);
+        this.applyParameters(this.props.parameters);
       }
 
       // token change, validate it.
-      if (nextProps.token !== this.props.token) {
+      if (this.props.token !== prevProps.token) {
         this.setState({ didInvalidateToken: false });
       }
     }
@@ -181,7 +181,7 @@ var TableauReport = function (_React$Component) {
     value: function applyFilters(filters) {
       var _this2 = this;
 
-      var REPLACE = _tableauApi2.default.FilterUpdateType.REPLACE;
+      var REPLACE = _tableauSdk2.default.FilterUpdateType.REPLACE;
       var promises = [];
 
       this.setState({ loading: true });
@@ -237,8 +237,17 @@ var TableauReport = function (_React$Component) {
       var options = _extends({}, filters, parameters, this.props.options, {
         onFirstInteractive: function onFirstInteractive() {
           _this4.workbook = _this4.viz.getWorkbook();
-          _this4.sheets = _this4.workbook.getActiveSheet().getWorksheets();
-          _this4.sheet = _this4.sheets[0];
+          _this4.sheet = _this4.workbook.getActiveSheet();
+
+          // If child sheets exist, choose them.
+          var hasChildSheets = typeof _this4.sheet.getWorksheets !== 'undefined';
+          if (hasChildSheets) {
+            var childSheets = _this4.sheet.getWorksheets();
+
+            if (childSheets && childSheets.length) {
+              _this4.sheet = childSheets[0];
+            }
+          }
 
           _this4.props.onLoad && _this4.props.onLoad(new Date());
         }
@@ -250,7 +259,7 @@ var TableauReport = function (_React$Component) {
         this.viz = null;
       }
 
-      this.viz = new _tableauApi2.default.Viz(this.container, vizUrl, options);
+      this.viz = new _tableauSdk2.default.Viz(this.container, vizUrl, options);
     }
   }, {
     key: 'render',

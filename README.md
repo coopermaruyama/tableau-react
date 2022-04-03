@@ -4,14 +4,15 @@ Tableau React component integrated with Tableau JS API.
 ## Install
 
 ```
-npm install tableau-react --save
+npm install tableau-react
 ```
 
-## Compile this module using your build tool.
- For example in webpack, add the below exclude rule to your `babel-loader`
+## Install Beta Version (Uses Tableau API v2.3.0)
+
+Note: This version is not heavily tested and may be unstable.
 
 ```
-exclude: /node_modules|tableau-react/
+npm install tableau-react@beta
 ```
 
 ## Usage
@@ -34,7 +35,7 @@ const options = {
   width: 100,
   hideTabs: false,
   // All other vizCreate options are supported here, too
-  // They are listed here: https://onlinehelp.tableau.com/current/api/js_api/en-us/JavaScriptAPI/js_api_ref.htm#ref_head_9
+  // They are listed here: https://help.tableau.com/current/api/js_api/en-us/JavaScriptAPI/js_api_ref.htm#vizcreateoptions_record
 };
 
 const filters = {
